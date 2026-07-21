@@ -1,42 +1,29 @@
-# Mega Cloud Vape Shop
+# 💨 Mega Cloud Vape Shop - E-Commerce SPA
 
-Mega Cloud Vape Shop es un e-commerce SPA de productos de vapeo, construido con React 19, Vite, React Router DOM, Firebase Firestore y Context API.
+Mega Cloud Vape Shop es una Single Page Application (SPA) de e-commerce enfocada en el nicho de productos de vapeo y accesorios. Desarrollada con **React 19**, **Vite**, **React Router DOM**, **Context API** y **Firebase Firestore** como Backend-as-a-Service (BaaS).
 
-## Instalación
+---
 
-```bash
-npm install
-```
+## 🌐 Demo y Despliegue en Vivo
 
-## Variables de entorno
+- **Sitio Web Publicado:** [https://mega-cloud-vape-shop.vercel.app](https://mega-cloud-vape-shop.vercel.app) *(Reemplaza este enlace con la URL de tu proyecto desplegado)*
+- **Repositorio Oficial:** [https://github.com/estebanvargash-ux/mega-cloud-vape-shop](https://github.com/estebanvargash-ux/mega-cloud-vape-shop)
 
-Crea un archivo `.env` en la raíz del proyecto con:
+---
 
-```env
-VITE_FIREBASE_API_KEY=tu_api_key
-VITE_FIREBASE_AUTH_DOMAIN=tu_proyecto.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=tu_proyecto
-VITE_FIREBASE_STORAGE_BUCKET=tu_proyecto.firebasestorage.app
-VITE_FIREBASE_MESSAGING_SENDER_ID=tu_sender_id
-VITE_FIREBASE_APP_ID=tu_app_id
-```
+## 🚀 Tecnologías Utilizadas
 
-## Ejecutar
+- **Frontend:** React 19, Vite, HTML5, CSS3 / Tailwind CSS
+- **Navegación:** React Router DOM
+- **Estado Global:** React Context API
+- **Base de Datos & Backend:** Firebase Firestore
+- **Control de Versiones:** Git & GitHub
 
-```bash
-npm run dev
-```
+---
 
-## Insertar productos en Firestore
+## 🛠️ Instalación y Configuración
 
-```bash
-node seedProducts.js
-```
-
-## Publicar
-
-```bash
-npm run build
-```
-
-Luego sube la carpeta `dist` a tu hosting estático o usa Firebase Hosting.
+1. **Clonar el repositorio:**
+   ```bash
+   git clone [https://github.com/estebanvargash-ux/mega-cloud-vape-shop.git](https://github.com/estebanvargash-ux/mega-cloud-vape-shop.git)
+   cd mega-cloud-vape-shop
