@@ -6,7 +6,7 @@ Mega Cloud Vape Shop es una Single Page Application (SPA) de e-commerce enfocada
 
 ## 🌐 Demo y Despliegue en Vivo
 
-- **Sitio Web Publicado:** [https://mega-cloud-vape-shop.vercel.app](https://mega-cloud-vape-shop.vercel.app) *(Reemplaza este enlace con la URL de tu proyecto desplegado)*
+- **Sitio Web Publicado:** [https://mega-cloud-react.web.app](https://mega-cloud-react.web.app) *(o pega aquí tu enlace real de Firebase)*
 - **Repositorio Oficial:** [https://github.com/estebanvargash-ux/mega-cloud-vape-shop](https://github.com/estebanvargash-ux/mega-cloud-vape-shop)
 
 ---
