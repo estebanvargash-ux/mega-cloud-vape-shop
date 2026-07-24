@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import CartContext from '../../context/CartContext';
 
 const CartWidget = () => {
-  const { getTotalQuantity } = useContext(CartContext);
-  const totalQuantity = getTotalQuantity();
+  // CORRECCIÓN: Extraemos directamente la variable 'totalItems'
+  const { totalItems } = useContext(CartContext);
 
   return (
     <Link
       to="/cart"
-      aria-label={`Ir al carrito${totalQuantity > 0 ? `, ${totalQuantity} productos` : ''}`}
+      aria-label={`Ir al carrito${totalItems > 0 ? `, ${totalItems} productos` : ''}`}
       style={{
         position: 'relative',
         display: 'inline-flex',
@@ -29,7 +29,7 @@ const CartWidget = () => {
         <circle cx="10" cy="20" r="1.3" />
         <circle cx="18" cy="20" r="1.3" />
       </svg>
-      {totalQuantity > 0 && (
+      {totalItems > 0 && (
         <span
           aria-hidden="true"
           style={{
@@ -50,7 +50,7 @@ const CartWidget = () => {
             lineHeight: 1,
           }}
         >
-          {totalQuantity}
+          {totalItems}
         </span>
       )}
     </Link>

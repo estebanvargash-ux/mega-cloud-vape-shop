@@ -1,99 +1,111 @@
-import { createContext, useCallback, useMemo, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
-const CartContext = createContext(null);
+const CartContext = createContext();
+const CART_STORAGE_KEY = 'mega-cloud-cart';
 
-const toSafeQuantity = (quantity) => {
-  const numericQuantity = Number(quantity);
-
-  if (!Number.isFinite(numericQuantity)) {
-    return 1;
+const readStoredCart = () => {
+  if (typeof window === 'undefined') {
+    return [];
   }
 
-  return Math.max(1, Math.floor(numericQuantity));
+  try {
+    const saved = window.localStorage.getItem(CART_STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch (error) {
+    console.warn('No se pudo leer el carrito guardado.', error);
+    return [];
+  }
 };
 
-export function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
+export const CartProvider = ({ children }) => {
+  const [cart, setCart] = useState(readStoredCart);
 
-  const addItem = useCallback((item, quantity) => {
-    if (!item?.id) {
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    } catch (error) {
+      console.warn('No se pudo guardar el carrito.', error);
+    }
+  }, [cart]);
+
+  const addItem = (product, quantity = 1) => {
+    if (!product) {
       return false;
     }
 
-    const stock = Math.max(0, Number(item.stock) || 0);
+    const normalizedQuantity = Math.max(1, Number(quantity) || 1);
+    const maxStock = Number(product.stock) || 0;
 
-    if (stock === 0) {
+    if (maxStock <= 0) {
       return false;
     }
 
-    const quantityToAdd = toSafeQuantity(quantity);
+    setCart((current) => {
+      const existing = current.find((item) => item.id === product.id);
+      const nextQuantity = existing ? existing.quantity + normalizedQuantity : normalizedQuantity;
+      const safeQuantity = Math.min(nextQuantity, maxStock);
 
-    setCart((currentCart) => {
-      const existingItem = currentCart.find((cartItem) => cartItem.id === item.id);
-
-      if (!existingItem) {
-        return [
-          ...currentCart,
-          {
-            ...item,
-            quantity: Math.min(quantityToAdd, stock),
-          },
-        ];
+      if (existing) {
+        return current.map((item) =>
+          item.id === product.id ? { ...item, quantity: safeQuantity } : item,
+        );
       }
 
-      return currentCart.map((cartItem) => {
-        if (cartItem.id !== item.id) {
-          return cartItem;
-        }
-
-        return {
-          ...cartItem,
-          ...item,
-          quantity: Math.min(cartItem.quantity + quantityToAdd, stock),
-        };
-      });
+      return [...current, { ...product, quantity: safeQuantity }];
     });
 
     return true;
-  }, []);
+  };
 
-  const removeItem = useCallback((itemId) => {
-    setCart((currentCart) => currentCart.filter((item) => item.id !== itemId));
-  }, []);
+  const updateItemQuantity = (id, quantity) => {
+    const normalizedQuantity = Number(quantity);
 
-  const clearCart = useCallback(() => {
-    setCart([]);
-  }, []);
+    if (!Number.isFinite(normalizedQuantity)) {
+      return;
+    }
 
-  const isInCart = useCallback(
-    (itemId) => cart.some((item) => item.id === itemId),
-    [cart],
-  );
+    setCart((current) => {
+      if (normalizedQuantity <= 0) {
+        return current.filter((item) => item.id !== id);
+      }
 
-  const getTotalQuantity = useCallback(
-    () => cart.reduce((total, item) => total + item.quantity, 0),
-    [cart],
-  );
+      return current.map((item) =>
+        item.id === id ? { ...item, quantity: Math.min(normalizedQuantity, Number(item.stock) || normalizedQuantity) } : item,
+      );
+    });
+  };
 
-  const getTotalPrice = useCallback(
-    () => cart.reduce((total, item) => total + Number(item.price) * item.quantity, 0),
-    [cart],
-  );
+  const removeItem = (id) => {
+    setCart((current) => current.filter((item) => item.id !== id));
+  };
 
-  const contextValue = useMemo(
-    () => ({
-      cart,
-      addItem,
-      removeItem,
-      clearCart,
-      isInCart,
-      getTotalQuantity,
-      getTotalPrice,
-    }),
-    [addItem, cart, clearCart, getTotalPrice, getTotalQuantity, isInCart, removeItem],
-  );
+  const clearCart = () => setCart([]);
 
-  return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>;
-}
+  const isInCart = (id) => cart.some((item) => item.id === id);
+
+  const getQuantity = (id) => cart.find((item) => item.id === id)?.quantity || 0;
+
+  const getTotal = () => cart.reduce((acc, item) => acc + Number(item.price) * Number(item.quantity), 0);
+
+  const totalItems = cart.reduce((acc, item) => acc + Number(item.quantity), 0);
+
+  const value = {
+    cart,
+    addItem,
+    updateItemQuantity,
+    removeItem,
+    clearCart,
+    isInCart,
+    getQuantity,
+    getTotal,
+    totalItems,
+  };
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+};
 
 export default CartContext;

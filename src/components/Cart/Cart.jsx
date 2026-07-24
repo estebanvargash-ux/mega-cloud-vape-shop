@@ -10,7 +10,8 @@ const priceFormatter = new Intl.NumberFormat('es-CL', {
 });
 
 const Cart = () => {
-  const { cart, clearCart, getTotalPrice } = useContext(CartContext);
+  // CORRECCIÓN 1: Extraemos 'getTotal' en lugar de 'getTotalPrice'
+  const { cart, clearCart, getTotal } = useContext(CartContext);
 
   if (cart.length === 0) {
     return (
@@ -27,7 +28,8 @@ const Cart = () => {
     );
   }
 
-  const totalPrice = getTotalPrice();
+  // CORRECCIÓN 2: Ejecutamos la función 'getTotal()'
+  const totalPrice = getTotal();
 
   return (
     <main style={{ width: 'min(1100px, calc(100% - 2rem))', margin: '0 auto', padding: '3rem 0 4rem' }}>
